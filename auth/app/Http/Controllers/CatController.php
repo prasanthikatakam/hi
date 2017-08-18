@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\cat;
+use Illuminate\Http\Request;
+
+class CatController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $cat =cat::paginate(5);
+        //print_r($cat);exit();
+        return view('content.cat-view',['cats'=>$cat]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('content.cat-insert');
+        
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+        'catname' => 'required'
+        
+    ]);
+        $data=new cat;
+        $data->cat_name=$request->catname;
+        $data->save();
+        return redirect()->route("index");   
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\cat  $cat
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\cat  $cat
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $data =cat::find($id);   
+        return view('content.cat-edit',['data'=>$data]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\cat  $cat
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+         $up=cat::find($request->catid);
+        $up->cat_name=$request->catname;
+        
+        $up->save();
+        
+        return redirect()->route("index");
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\cat  $cat
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+         $del =cat::find($id);
+        $del->delete();
+        echo "deleted successfully";
+           return redirect()->route("index");   
+    }
+}
